@@ -1,2 +1,5 @@
 *.o
-!*.*
+
+tools/tools
+invoker/invoker
+deamon/deamon

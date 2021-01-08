@@ -1,0 +1,36 @@
+
+!$err = "-[#red]->"
+
+!unquoted procedure SOMEONE_SAY(icon, name, before, prefix)
+!if (%strlen(before) == 0)
+    prefix --> "icon : ##name"
+!else
+    prefix -->[before] "icon : ##name"
+!endif
+!endprocedure
+
+!unquoted procedure DEAMON_SAY(name, before="", prefix="")
+SOMEONE_SAY("😈", name, before, prefix)
+!endprocedure
+
+!unquoted procedure INVOKER_SAY(name, before="", prefix="")
+SOMEONE_SAY("🧙", name, before, prefix)
+!endprocedure
+
+!unquoted procedure ERROR(name, before="", prefix="")
+!if (%strlen(before) == 0)
+    prefix $err "❌ : ##name" << error >>
+!else
+    prefix $err[before] "❌ : ##name" << error >>
+!endif
+!endprocedure
+
+
+
+
+
+
+skinparam activity {
+  ArrowColor #0077ff
+  FontColor<< error >> #red
+}

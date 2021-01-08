@@ -1,4 +1,3 @@
-
 !$err = "-[#red]->"
 
 !unquoted procedure SOMEONE_SAY(icon, name, before, prefix)
@@ -25,12 +24,9 @@ SOMEONE_SAY("🧙", name, before, prefix)
 !endif
 !endprocedure
 
-
-
-
-
-
 skinparam activity {
   ArrowColor #0077ff
   FontColor<< error >> #red
+  BorderColor #0077ff
+  BorderColor<< error >> #red
 }

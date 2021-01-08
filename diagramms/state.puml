@@ -1,0 +1,32 @@
+@startuml
+!include tools.iuml
+
+INVOKER_SAY(Read Arguments, , (*))
+
+note right: If only one argument return error 1\n(Do not create error if more than 2\narguments for extensions)
+if "Argument Number == 1" then 
+    ERROR(One argument needed, YES)
+    $err[return 1] (*)
+else 
+    INVOKER_SAY(Open pipe, YES)
+    INVOKER_SAY(Write 'STATE' in pipeline)
+    --> ===P===
+    "😈 : Listening for events" --> ===P===
+    INVOKER_SAY(Wait for response..., Invoker)
+    --> ===R===
+
+    DEAMON_SAY(Write 'ALIVE', Deamon, ===P===)
+    --> ===R=== 
+endif
+
+===R=== --> if "Timeout error" then
+    ERROR(Timeout Error, YES)
+    -->[return 2] (*)
+else 
+    INVOKER_SAY(Deamon is alive, NO)
+    -->[return 0] (*)
+endif
+
+DEAMON_SAY(Listening for other events, Deamon, ===R===)
+
+@enduml 

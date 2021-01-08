@@ -1,0 +1,33 @@
+@startuml
+
+|invokator|
+start
+:attente entrée commande;
+:reception du reset et trasmission de la demande au démon;
+fork
+    :attente du message;
+fork again
+    |daemon|
+    if (le démon est démarré) then (oui)
+        |invokator| 
+        :reception du message positif;
+    else (non)
+        |invokator|
+        :affichage message démon non démarré;
+        stop
+    endif
+end fork
+
+fork
+    :attente du message;
+fork again
+    |daemon|
+    :modification date début dans le fichier;
+    :envoie du message de réussite;
+    |invokator|
+end fork
+:affichage message de réussite;
+end
+
+
+@enduml

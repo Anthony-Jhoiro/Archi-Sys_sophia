@@ -1,0 +1,34 @@
+@startuml
+
+|invokator|
+start
+:attente entrée commande;
+:reception du duration et trasmission de la demande au démon;
+fork
+    :attente confirmation;
+fork again
+    |daemon|
+    if (le démon est démarré) then (oui)
+        |invokator|
+        :reception du message positif;
+    else (non)
+        |invokator|
+        :affichage message démon non démarré;
+        stop
+    endif
+end fork
+
+fork
+    :attente du message;
+fork again
+    |daemon|
+    :recherche date début dans le fichier;
+    :calcul durée de fonctionnement
+    :envoie durée (sous forme de timestamp);
+    |invokator|
+end fork
+:convertit timestamp en hh:mm:ss;
+:affichage durée;
+end
+
+@enduml

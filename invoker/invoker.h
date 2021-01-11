@@ -3,9 +3,17 @@
 
 #include "../tools/tools.h"
 
+// TODO : check rights
+#define FIFO_MODE 0666
+
 /**
  * \return 1 if deamon is active
  */
-int pingDeamon(connection conn);
+void pingDeamon(t_fifo fifo);
+
+/**
+ * 
+ */
+int createDeamon(t_fifo fifo);
 
 #endif

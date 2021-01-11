@@ -2,31 +2,24 @@
 #define TOOLS_H
 
 #define BUFFER_SIZE 256
+typedef char *t_fifo;
 
-typedef struct m_connection
-{
-    char *filename;
-    int tubeDeamon[2];
-    int tubeInvoker[2];
-} connection;
-typedef
+/**
+ * Time towait a response of a process
+ */
+#define CONNECTION_TIMEOUT 10
 
-    /**
+/**
  * \brief Open a connection between invoker and deamon
  * \param filename The filename for the communication
  * \return 0 if the pipe oppened successfully
  */
-    int
-    openConnection(char *filename);
+int openConnection(char *filename);
 
-/**
- * \return 1 si ça marche
- */
-int send(int *tube, char *message);
+void send(t_fifo fifo, char *message);
 
-/**
- * \return 1 si ça marche
- */
-int listen(int *tube, char *message);
+void listen(t_fifo fifo, char *message);
+
+int listenWithTimeout(char *filename, char *message);
 
 #endif

@@ -76,18 +76,14 @@ int listenWithTimeout(char *filename, char *message)
 
     // Fork children
     listener = fork();
-    printf("listener = %d\n", listener);
     if (listener == -1)
         return 1;
     else if (listener == 0)
     {
-        printf("Listen for input...\n");
         listen(filename, message);
     }
     else
     {
-        printf("Timer\n");
-
         timer = fork();
         if (timer == -1)
             return 1;

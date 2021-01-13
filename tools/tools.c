@@ -83,7 +83,7 @@ void listen(t_fifo fifo, char *buffer)
 int listenWithTimeout(char *filename, char *message)
 {
     pid_t listener, timer = -1;
-    printf("Listen with tiemout\n");
+    printf("Listen with timeout\n");
 
     int tube[2];
     if (pipe(tube) != 0)
@@ -96,7 +96,7 @@ int listenWithTimeout(char *filename, char *message)
     listener = fork();
     if (listener == -1)
         return 1;
-    else if (listener == 0 && timer != 0)
+    else if (listener == 0 && timer != 0) // TODO : is timer != 0 necessary ?
     {
         close(tube[0]);
         listen(filename, message);
@@ -111,6 +111,7 @@ int listenWithTimeout(char *filename, char *message)
 
         else if (timer == 0)
         {
+
             sleep(CONNECTION_TIMEOUT);
             exit(0);
         }

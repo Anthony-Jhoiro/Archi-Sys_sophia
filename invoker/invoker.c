@@ -55,16 +55,32 @@ int isDeamonAlive(t_fifo fifo)
         return 1;
 
     char buffer[BUFFER_SIZE];
+
     int ret = listenWithTimeout(fifo, buffer);
 
-    printf("\x1B[0m[Invoker] Recieved [%s]\n", buffer);
-    printf("\x1B[0m[Invoker] Exit code [%d]\n", ret);
-    return ret;
+    if (ret != 0)
+        return ret;
+
+    if (strcmp("PONG\n", buffer) != 0)
+        return 1;
+
+    return 0;
+}
+
+int killDeamon(t_fifo fifo)
+{
+    if (!isFifoOpen(fifo))
+    {
+        return -1;
+    }
+    int sendKill = send(fifo, "KILL");
+    unlink(fifo);
+    return sendKill;
 }
 
 int cmdState(t_fifo fifo)
 {
-    printf("\x1B[0m[Invoker] Controling deamon state state\n");
+    printf("\x1B[0m[Invoker] Controling deamon state\n");
     if (isDeamonAlive(fifo) == 0)
     {
         printf("\x1B[0m[Invoker] Deamon is alive\n");
@@ -76,13 +92,25 @@ int cmdState(t_fifo fifo)
 
 int cmdStart(t_fifo fifo)
 {
-    printf("\x1B[0m[Invoker] Starting deamon state state\n");
+    printf("\x1B[0m[Invoker] Starting deamon\n");
     if (createDeamon(fifo) == 0)
     {
-        printf("\x1B[0m[Invoker] Starting deamon state state\n");
+        printf("\x1B[0m[Invoker] Success Starting deamon\n");
         return 0;
     }
-    printf("\x1B[0m[Invoker] Starting deamon state state\n");
+    printf("\x1B[0m[Invoker] Fail Starting deamon\n");
+    return 1;
+}
+
+int cmdStop(t_fifo fifo)
+{
+    printf("\x1B[0m[Invoker] Killing the deamon\n");
+    if (killDeamon(fifo) == 0)
+    {
+        printf("\x1B[0m[Invoker] Success Killing the deamon\n");
+        return 0;
+    }
+    printf("\x1B[0m[Invoker] Fail Killing the deamon\n");
     return 1;
 }
 
@@ -101,33 +129,33 @@ int main(int argc, char *argv[])
 
     if (strcmp(command, "--start") == 0)
     {
-        createDeamon(myFifo);
+        return cmdStart(myFifo);
     }
     else if (strcmp(command, "--state") == 0)
     {
         return cmdState(myFifo);
     }
-    else if (strcmp(command, "help") == 0)
+    else if (strcmp(command, "--help") == 0)
     {
         fprintf(stderr, "Not implemented.\n");
     }
-    else if (strcmp(command, "date") == 0)
+    else if (strcmp(command, "--date") == 0)
     {
         fprintf(stderr, "Not implemented.\n");
     }
-    else if (strcmp(command, "duration") == 0)
+    else if (strcmp(command, "--duration") == 0)
     {
         fprintf(stderr, "Not implemented.\n");
     }
-    else if (strcmp(command, "reset") == 0)
+    else if (strcmp(command, "--reset") == 0)
     {
         fprintf(stderr, "Not implemented.\n");
     }
-    else if (strcmp(command, "stop") == 0)
+    else if (strcmp(command, "--stop") == 0)
     {
-        fprintf(stderr, "Not implemented.\n");
+        return cmdStop(myFifo);
     }
-    else if (strcmp(command, "restart") == 0)
+    else if (strcmp(command, "--restart") == 0)
     {
         fprintf(stderr, "Not implemented.\n");
     }

@@ -9,18 +9,17 @@
 
 void pongInvoker(t_fifo fifo)
 {
-    printf("\x1B[34m[DEAMON] Send pong\n");
     send(fifo, "PONG");
-    printf("\x1B[34m[DEAMON] pong sent\n");
 }
 
-void listening(t_fifo fifo)
+int listening(t_fifo fifo)
 {
-
     char buffer[BUFFER_SIZE];
 
-    printf("\x1B[34m[DEAMON] Listening...\n");
-    while (1)
+    int deamonIsListening = 1;
+
+    printf("\x1B[34m[DEAMON] Listening for inputs...\n");
+    while (deamonIsListening)
     {
         int fd = open(fifo, O_RDONLY);
         FILE *fp = fdopen(fd, "r");
@@ -38,12 +37,16 @@ void listening(t_fifo fifo)
 
         if (strcmp(buffer, "PING") == 0)
         {
-            printf("\x1B[34m[DEAMON] PING recieved\n");
-
             pongInvoker(fifo);
+        }
+        else if (strcmp(buffer, "KILL") == 0)
+        {
+            printf("\x1B[34m[DEAMON] Stoping the deamon\n");
+            deamonIsListening = 0;
         }
         close(fd);
     }
+    return 0;
 }
 
 int main(int argc, char *argv[])
@@ -53,13 +56,12 @@ int main(int argc, char *argv[])
         fprintf(stderr, "One argument is needed\n");
         return 1;
     }
+    printf("\x1B[34m[Deamon] Hello !\n");
 
     // Get fifo name from the fist argument
     t_fifo myFifo = argv[1];
 
     printf("\x1B[34m[Deamon] Using fifo [%s]\n", myFifo);
 
-    listening(myFifo);
-
-    return 0;
+    return listening(myFifo);
 }

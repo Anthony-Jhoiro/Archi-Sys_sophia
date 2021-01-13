@@ -26,7 +26,7 @@ int createDeamon(t_fifo fifo)
     else if (deamonProcess == 0)
     {
         // son process
-        printf("\x1B[0m[Invoker] Create deamon\n");
+        printf("\x1B[32m[Invoker] Create deamon\n");
         execlp("../deamon/deamon", "deamon", fifo, NULL);
     }
     if (mkfifo(fifo, FIFO_MODE) != 0)
@@ -80,38 +80,45 @@ int killDeamon(t_fifo fifo)
 
 int cmdState(t_fifo fifo)
 {
-    printf("\x1B[0m[Invoker] Controling deamon state\n");
+    printf("\x1B[32m[Invoker] Controling deamon state\n");
     if (isDeamonAlive(fifo) == 0)
     {
-        printf("\x1B[0m[Invoker] Deamon is alive\n");
+        printf("\x1B[32m[Invoker] Deamon is alive\n");
         return 0;
     }
-    printf("\x1B[0m[Invoker] Deamon is not alive\n");
+    printf("\x1B[32m[Invoker] Deamon is not alive\n");
     return 1;
 }
 
 int cmdStart(t_fifo fifo)
 {
-    printf("\x1B[0m[Invoker] Starting deamon\n");
+    printf("\x1B[32m[Invoker] Starting deamon\n");
     if (createDeamon(fifo) == 0)
     {
-        printf("\x1B[0m[Invoker] Success Starting deamon\n");
+        printf("\x1B[32m[Invoker] Success Starting deamon\n");
         return 0;
     }
-    printf("\x1B[0m[Invoker] Fail Starting deamon\n");
+    printf("\x1B[32m[Invoker] Fail Starting deamon\n");
     return 1;
 }
 
 int cmdStop(t_fifo fifo)
 {
-    printf("\x1B[0m[Invoker] Killing the deamon\n");
+    printf("\x1B[32m[Invoker] Killing the deamon\n");
     if (killDeamon(fifo) == 0)
     {
-        printf("\x1B[0m[Invoker] Success Killing the deamon\n");
+        printf("\x1B[32m[Invoker] Success Killing the deamon\n");
         return 0;
     }
-    printf("\x1B[0m[Invoker] Fail Killing the deamon\n");
+    printf("\x1B[32m[Invoker] Fail Killing the deamon\n");
     return 1;
+}
+
+int cmdRestart(t_fifo fifo)
+{
+    printf("\x1B[32m[Invoker] Restarting the deamon\n");
+    cmdStop(fifo);
+    return cmdStart(fifo);
 }
 
 int main(int argc, char *argv[])
@@ -125,7 +132,6 @@ int main(int argc, char *argv[])
     }
 
     char *command = argv[1];
-    printf("\x1B[0m[Invoker] Commande = %s\n", command);
 
     if (strcmp(command, "--start") == 0)
     {
@@ -157,11 +163,11 @@ int main(int argc, char *argv[])
     }
     else if (strcmp(command, "--restart") == 0)
     {
-        fprintf(stderr, "Not implemented.\n");
+        return cmdRestart(myFifo);
     }
     else
     {
-        fprintf(stderr, "\x1B[0m[Invoker] Unknown argument [%s]\n", command);
+        fprintf(stderr, "\x1B[32m[Invoker] Unknown argument [%s]\n", command);
     }
 
     return 0;

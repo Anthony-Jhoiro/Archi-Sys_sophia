@@ -27,7 +27,7 @@ int listening(t_fifo fifo)
         // int ret = read(fd, buffer, BUFFER_SIZE);
 
         // printf("Ret %d", ret);
-        fscanf(fp, "%s", buffer);
+        fscanf(fp, "%s", buffer); // We are using fscanf here to pause the process unitil the next input
 
         if (strlen(buffer) == 0)
             continue;
@@ -63,5 +63,8 @@ int main(int argc, char *argv[])
 
     printf("\x1B[34m[Deamon] Using fifo [%s]\n", myFifo);
 
-    return listening(myFifo);
+    int returnCode = listening(myFifo);
+
+    printf("\x1B[34m[Deamon] Good bye !\n", myFifo);
+    return returnCode;
 }

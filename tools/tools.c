@@ -119,7 +119,6 @@ int listenWithTimeout(char *filename, char *message)
         {
             // Wait for the first child. The wait function return the pid of the first son that ended its process
             pid_t firstChild = wait(NULL);
-            printf("%d, %d, %d\n", listener, timer, firstChild);
 
             if (firstChild == timer)
             {

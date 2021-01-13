@@ -9,7 +9,7 @@
 /**
  * \return 1 if deamon is active
  */
-void pingDeamon(t_fifo fifo);
+int pingDeamon(t_fifo fifo);
 
 /**
  * 

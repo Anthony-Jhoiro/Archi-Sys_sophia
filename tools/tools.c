@@ -14,6 +14,13 @@ int strLength(char *str)
     return cpt;
 }
 
+int isFifoOpen(t_fifo fifo)
+{
+    struct stat st;
+    stat(fifo, &st);
+    return S_ISFIFO(st.st_mode);
+}
+
 /**
  * \brief Open a connection between invoker and deamon
  * \param filename The filename for the communication
@@ -41,9 +48,11 @@ int closeConnection(char *filename)
     return unlink(filename);
 }
 
-void send(t_fifo fifo, char *message)
+int send(t_fifo fifo, char *message)
 {
     int fd = open(fifo, O_WRONLY);
+    if (fd == -1)
+        return 1;
 
     char buffer[BUFFER_SIZE];
 
@@ -56,6 +65,7 @@ void send(t_fifo fifo, char *message)
     write(fd, buffer, strLength(buffer));
 
     close(fd);
+    return 0;
 }
 
 void listen(t_fifo fifo, char *buffer)
@@ -72,15 +82,26 @@ void listen(t_fifo fifo, char *buffer)
  */
 int listenWithTimeout(char *filename, char *message)
 {
-    pid_t listener, timer;
+    pid_t listener, timer = -1;
+    printf("Listen with tiemout\n");
+
+    int tube[2];
+    if (pipe(tube) != 0)
+    {
+        perror("Error creating the pipe");
+        return 1;
+    }
 
     // Fork children
     listener = fork();
     if (listener == -1)
         return 1;
-    else if (listener == 0)
+    else if (listener == 0 && timer != 0)
     {
+        close(tube[0]);
         listen(filename, message);
+        write(tube[1], message, BUFFER_SIZE);
+        exit(0);
     }
     else
     {
@@ -88,12 +109,10 @@ int listenWithTimeout(char *filename, char *message)
         if (timer == -1)
             return 1;
 
-        // listener
-
-        // timer
         else if (timer == 0)
         {
             sleep(CONNECTION_TIMEOUT);
+            exit(0);
         }
         else
         {
@@ -108,6 +127,9 @@ int listenWithTimeout(char *filename, char *message)
                 kill(listener, 9);
                 return 2;
             }
+
+            close(tube[1]);
+            read(tube[0], message, BUFFER_SIZE);
             // TODO : Replace 9 with SIGKILL
             kill(timer, 9);
 
@@ -115,22 +137,3 @@ int listenWithTimeout(char *filename, char *message)
         }
     }
 }
-
-// int main(int argc, char const *argv[])
-// {
-//     char buffer[256];
-//     char *filename = "/tmp/sophia";
-//     createConnection(filename);
-
-//     printf("Send hello \n");
-//     send(filename, "Hello !");
-
-//     printf("Start listening\n");
-//     int ret = listen(filename, buffer);
-
-//     printf("[%d] => %s\n", ret, buffer);
-
-//     closeConnection(filename);
-
-//     return 0;
-// }

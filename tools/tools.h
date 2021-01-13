@@ -7,7 +7,7 @@ typedef char *t_fifo;
 /**
  * Time towait a response of a process
  */
-#define CONNECTION_TIMEOUT 10
+#define CONNECTION_TIMEOUT 4
 
 /**
  * \brief Open a connection between invoker and deamon
@@ -16,10 +16,12 @@ typedef char *t_fifo;
  */
 int openConnection(char *filename);
 
-void send(t_fifo fifo, char *message);
+int send(t_fifo fifo, char *message);
 
 void listen(t_fifo fifo, char *message);
 
 int listenWithTimeout(char *filename, char *message);
+
+int isFifoOpen(t_fifo fifo);
 
 #endif

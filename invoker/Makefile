@@ -1,8 +1,14 @@
-invoker : invoker.o tools.o
-	gcc -o invoker invoker.o tools.o
+invoker : invoker.o tools.o fifo_tools.o log_tools.o
+	gcc -o invoker invoker.o tools.o fifo_tools.o log_tools.o
 
 invoker.o : invoker.c
 	gcc -c invoker.c
 
 tools.o : ../tools/tools.c
 	gcc -c ../tools/tools.c
+
+fifo_tools.o : ../tools/fifo_tools.c
+	gcc -c ../tools/fifo_tools.c
+
+log_tools.o : ../tools/log_tools.c
+	gcc -c ../tools/log_tools.c

@@ -1,27 +1,30 @@
 #ifndef TOOLS_H
 #define TOOLS_H
 
-#define BUFFER_SIZE 256
+#include "constants.h"
+// FIFO
+
 typedef char *t_fifo;
 
-/**
- * Time towait a response of a process
- */
-#define CONNECTION_TIMEOUT 4
+int forceFifoCreation(t_fifo fifo);
 
-/**
- * \brief Open a connection between invoker and deamon
- * \param filename The filename for the communication
- * \return 0 if the pipe oppened successfully
- */
-int openConnection(char *filename);
+int destroyFifo(t_fifo fifo);
 
 int send(t_fifo fifo, char *message);
 
 void listen(t_fifo fifo, char *message);
 
+int isFifoOpen(t_fifo fifo);
+
+// Utilitaires
 int listenWithTimeout(char *filename, char *message);
 
-int isFifoOpen(t_fifo fifo);
+int strLength(char *str);
+
+int areEquals(char *chaine1, char *chaine2);
+
+void invokerSay(char *format, ...);
+
+void deamonSay(char *format, ...);
 
 #endif

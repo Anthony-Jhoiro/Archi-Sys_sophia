@@ -6,11 +6,7 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <string.h>
-
-int destroyFifo(t_fifo fifo)
-{
-    unlink(fifo);
-}
+#include <time.h>
 
 /**
  * \return 0 if it was a success
@@ -26,17 +22,10 @@ int createDeamon(t_fifo fifo)
     else if (deamonProcess == 0)
     {
         // son process
-        printf("\x1B[32m[Invoker] Create deamon\n");
+        invokerSay("Create deamon");
         execlp("../deamon/deamon", "deamon", fifo, NULL);
     }
-    if (mkfifo(fifo, FIFO_MODE) != 0)
-    {
-        unlink(fifo);
-        if (mkfifo(fifo, FIFO_MODE) != 0)
-        {
-            perror("[ERROR] fifo creation");
-        }
-    }
+    return forceFifoCreation(fifo);
 }
 
 int pingDeamon(t_fifo fifo)
@@ -58,10 +47,12 @@ int isDeamonAlive(t_fifo fifo)
 
     int ret = listenWithTimeout(fifo, buffer);
 
+    printf("=> %d [%s] \n", ret, buffer);
+
     if (ret != 0)
         return ret;
 
-    if (strcmp("PONG\n", buffer) != 0)
+    if (strcmp("PONG", buffer) != 0)
         return 1;
 
     return 0;
@@ -74,51 +65,75 @@ int killDeamon(t_fifo fifo)
         return -1;
     }
     int sendKill = send(fifo, "KILL");
-    unlink(fifo);
+    destroyFifo(fifo);
     return sendKill;
 }
 
 int cmdState(t_fifo fifo)
 {
-    printf("\x1B[32m[Invoker] Controling deamon state\n");
+    invokerSay("Controling deamon state");
     if (isDeamonAlive(fifo) == 0)
     {
-        printf("\x1B[32m[Invoker] Deamon is alive\n");
+        invokerSay("Deamon is alive");
         return 0;
     }
-    printf("\x1B[32m[Invoker] Deamon is not alive\n");
+    invokerSay("Deamon is not alive");
     return 1;
 }
 
 int cmdStart(t_fifo fifo)
 {
-    printf("\x1B[32m[Invoker] Starting deamon\n");
+    invokerSay("Starting deamon");
     if (createDeamon(fifo) == 0)
     {
-        printf("\x1B[32m[Invoker] Success Starting deamon\n");
+        invokerSay("Success Starting deamon");
         return 0;
     }
-    printf("\x1B[32m[Invoker] Fail Starting deamon\n");
+    invokerSay("Fail Starting deamon");
     return 1;
 }
 
 int cmdStop(t_fifo fifo)
 {
-    printf("\x1B[32m[Invoker] Killing the deamon\n");
+    invokerSay("Killing the deamon");
     if (killDeamon(fifo) == 0)
     {
-        printf("\x1B[32m[Invoker] Success Killing the deamon\n");
+        invokerSay("Success Killing the deamon");
         return 0;
     }
-    printf("\x1B[32m[Invoker] Fail Killing the deamon\n");
+    invokerSay("Fail Killing the deamon");
     return 1;
 }
 
 int cmdRestart(t_fifo fifo)
 {
-    printf("\x1B[32m[Invoker] Restarting the deamon\n");
+    invokerSay("Restarting the deamon");
     cmdStop(fifo);
     return cmdStart(fifo);
+}
+
+int cmdDate(t_fifo fifo)
+{
+    if (!isFifoOpen(fifo))
+    {
+        return -1;
+    }
+    int sendSuccess = send(fifo, "TIME");
+    if (sendSuccess != 0)
+        return 1;
+
+    char buffer[BUFFER_SIZE];
+
+    int ret = listenWithTimeout(fifo, buffer);
+
+    if (ret != 0)
+        return ret;
+
+    invokerSay("Date : %s s", buffer);
+
+    time_t time = strtol(buffer, NULL, 10);
+
+    return 0;
 }
 
 int main(int argc, char *argv[])
@@ -127,7 +142,7 @@ int main(int argc, char *argv[])
 
     if (argc == 1)
     {
-        puts("Error, one argument is needed");
+        invokerSay("Error, one argument is needed");
         return 1;
     }
 
@@ -147,7 +162,7 @@ int main(int argc, char *argv[])
     }
     else if (strcmp(command, "--date") == 0)
     {
-        fprintf(stderr, "Not implemented.\n");
+        return cmdDate(myFifo);
     }
     else if (strcmp(command, "--duration") == 0)
     {
@@ -167,7 +182,7 @@ int main(int argc, char *argv[])
     }
     else
     {
-        fprintf(stderr, "\x1B[32m[Invoker] Unknown argument [%s]\n", command);
+        fprintf(stderr, "Unknown argument [%s]\n", command);
     }
 
     return 0;

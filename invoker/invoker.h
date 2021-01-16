@@ -3,9 +3,6 @@
 
 #include "../tools/tools.h"
 
-// TODO : check rights
-#define FIFO_MODE 0666
-
 /**
  * \return 1 if deamon is active
  */

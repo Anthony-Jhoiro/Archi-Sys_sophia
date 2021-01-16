@@ -3,9 +3,10 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/wait.h>
-#include <fcntl.h>
-#include <sys/stat.h>
 
+/**
+ * \brief Retuourne la taille de la chaine donnée en paramètre
+ */
 int strLength(char *str)
 {
     int cpt;
@@ -14,76 +15,30 @@ int strLength(char *str)
     return cpt;
 }
 
-int isFifoOpen(t_fifo fifo)
-{
-    struct stat st;
-    stat(fifo, &st);
-    return S_ISFIFO(st.st_mode);
-}
-
 /**
- * \brief Open a connection between invoker and deamon
- * \param filename The filename for the communication
- * \return 0 if the pipe oppened successfully
+ * \brief Compare 2 chaines de caractères, retourne 0 si elles sont identiques sinon 1.
+ * \param chaine1 Première chaine
+ * \param chaine2 Seconde chaine
  */
-int getConnection(char *filename)
+int areEquals(char *chaine1, char *chaine2)
 {
-    int fd = open(filename, O_RDONLY);
-    FILE *fp = fdopen(fd, "r");
-}
-
-int createConnection(char *filename)
-{
-    unlink(filename);
-    if (mkfifo(filename, 0644) != 0)
+    int i = 0;
+    while (chaine1[i] != '\0')
     {
-        perror("Fail to create Fifo");
-        return 3;
+        if (chaine1[i] != chaine2[i])
+        {
+            return 1;
+        }
     }
     return 0;
 }
 
-int closeConnection(char *filename)
-{
-    return unlink(filename);
-}
-
-int send(t_fifo fifo, char *message)
-{
-    int fd = open(fifo, O_WRONLY);
-    if (fd == -1)
-        return 1;
-
-    char buffer[BUFFER_SIZE];
-
-    // TODO : is buffer necessary ?
-    sprintf(buffer, "%s\n", message);
-
-    // FILE *fp = fdopen(fd, "w");
-    // fprintf(fp, "%s", buffer);
-
-    write(fd, buffer, strLength(buffer));
-
-    close(fd);
-    return 0;
-}
-
-void listen(t_fifo fifo, char *buffer)
-{
-    int fd = open(fifo, O_RDONLY);
-
-    read(fd, buffer, BUFFER_SIZE);
-
-    close(fd);
-}
-
 /**
- * \return 0 si ça marche
+ * \brief 
  */
 int listenWithTimeout(char *filename, char *message)
 {
     pid_t listener, timer = -1;
-    printf("Listen with timeout\n");
 
     int tube[2];
     if (pipe(tube) != 0)

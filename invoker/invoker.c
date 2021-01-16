@@ -136,6 +136,39 @@ int cmdDate(t_fifo fifo)
     return 0;
 }
 
+int cmdDuration(t_fifo fifo)
+{
+    if (!isFifoOpen(fifo))
+    {
+        return -1;
+    }
+    int sendSuccess = send(fifo, "DURATION");
+    if (sendSuccess != 0)
+        return 1;
+
+    char buffer[BUFFER_SIZE];
+
+    int ret = listenWithTimeout(fifo, buffer);
+
+    if (ret != 0)
+        return ret;
+
+    invokerSay("Duration : %s s", buffer);
+
+    time_t time = strtol(buffer, NULL, 10);
+
+    return 0;
+}
+
+int cmdReset(t_fifo fifo)
+{
+    if (!isFifoOpen(fifo))
+    {
+        return -1;
+    }
+    return send(fifo, "RESET");
+}
+
 int main(int argc, char *argv[])
 {
     t_fifo myFifo = "/tmp/sophia";
@@ -166,11 +199,11 @@ int main(int argc, char *argv[])
     }
     else if (strcmp(command, "--duration") == 0)
     {
-        fprintf(stderr, "Not implemented.\n");
+        return cmdDuration(myFifo);
     }
     else if (strcmp(command, "--reset") == 0)
     {
-        fprintf(stderr, "Not implemented.\n");
+        return cmdReset(myFifo);
     }
     else if (strcmp(command, "--stop") == 0)
     {

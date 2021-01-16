@@ -32,7 +32,7 @@ int listening(t_fifo fifo)
             continue;
 
         deamonSay("recieved [%s]", buffer);
-        usleep(500);
+        usleep(200);
 
         if (strcmp(buffer, "PING") == 0)
         {
@@ -48,6 +48,17 @@ int listening(t_fifo fifo)
             time_t currentTime = time(0);
             char response[BUFFER_SIZE];
             sprintf(response, "%ld", currentTime);
+            send(fifo, response);
+        }
+        else if (strcmp(buffer, "RESET") == 0)
+        {
+            baseTime = time(0);
+        }
+        else if (strcmp(buffer, "DURATION") == 0)
+        {
+            time_t timeDelta = time(0) - baseTime;
+            char response[BUFFER_SIZE];
+            sprintf(response, "%ld", timeDelta);
             send(fifo, response);
         }
 

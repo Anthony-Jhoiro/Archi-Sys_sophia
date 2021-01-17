@@ -3,7 +3,14 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <sys/stat.h>
-
+/**
+ * \brief Cette fonction envoie un message dans la fifo
+ * 
+ * \param t_fifo : fifo pour écrire le message
+ * \param char* : message à envoyer
+ * 
+ * \return int : 0 si réussite, 1 si impossible d'ouvrir la fifo
+ */
 int send(t_fifo fifo, char *message)
 {
     int fd = open(fifo, O_WRONLY);
@@ -22,6 +29,14 @@ int send(t_fifo fifo, char *message)
     return 0;
 }
 
+/**
+ * \brief Cette fonction lit une fifo pour en tirer un message
+ * 
+ * \param t_fifo : fifo pour lire le message
+ * \param char* : buffer où enregistrer
+ * 
+ * \return void
+ */
 void listen(t_fifo fifo, char *buffer)
 {
     int fd = open(fifo, O_RDONLY);
@@ -31,11 +46,25 @@ void listen(t_fifo fifo, char *buffer)
     close(fd);
 }
 
+/**
+ * \brief Cette fonction détruit une fifo
+ * 
+ * \param t_fifo : fifo à détruire
+ * 
+ * \return int : résultat de la fonction unlink
+ */
 int destroyFifo(t_fifo fifo)
 {
     return unlink(fifo);
 }
 
+/**
+ * \brief Cette fonction force la création d'une nouvelle fifo, même s'il en existe déjà une
+ * 
+ * \param t_fifo : fifo à créer ou recréer
+ * 
+ * \return int : 0 si la fifo a pu être créée (ou recréée), 1 s'il y a un problème dans la construction de la fifo
+ */
 int forceFifoCreation(t_fifo fifo)
 {
     if (mkfifo(fifo, FIFO_MODE) != 0)
@@ -50,6 +79,13 @@ int forceFifoCreation(t_fifo fifo)
     return 0;
 }
 
+/**
+ * \brief Cette fonction retourne le statut d'une fifo
+ * 
+ * \param t_fifo : fifo à tester
+ * 
+ * \return int : 0 si la fifo est fermée, 1 si ouverte
+ */
 int isFifoOpen(t_fifo fifo)
 {
     struct stat st;

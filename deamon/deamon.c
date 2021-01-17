@@ -41,14 +41,17 @@ int listening(t_fifo fifo)
 
         if (strcmp(buffer, PING_MESSAGE) == 0)
         {
+            // Send a PONG to the invoker
             pongInvoker(fifo);
         }
         else if (strcmp(buffer, KILL_MESSAGE) == 0)
         {
+            // Stop listening for events => Stop the deamon
             deamonIsListening = 0;
         }
         else if (strcmp(buffer, DATE_MESSAGE) == 0)
         {
+            // Send the current date
             time_t currentTime = time(0);
             char response[BUFFER_SIZE];
             sprintf(response, "%ld", currentTime);
@@ -56,10 +59,12 @@ int listening(t_fifo fifo)
         }
         else if (strcmp(buffer, RESET_MESSAGE) == 0)
         {
+            // Reset the base time
             baseTime = time(0);
         }
         else if (strcmp(buffer, DURATION_MESSAGE) == 0)
         {
+            // Send the difference between the current time and the base time
             time_t timeDelta = time(0) - baseTime;
             char response[BUFFER_SIZE];
             sprintf(response, "%ld", timeDelta);

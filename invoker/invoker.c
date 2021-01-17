@@ -57,7 +57,8 @@ int isDeamonAlive(t_fifo fifo)
     if (ret != 0)
         return ret;
 
-    if (areEquals(PONG_MESSAGE, buffer))
+    invokerSay("Recieved [%s]", buffer);
+    if (!areEquals(PONG_MESSAGE, buffer))
         return 1;
 
     return 0;

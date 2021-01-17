@@ -8,11 +8,18 @@
 #include <string.h>
 #include <time.h>
 
+/**
+ * \brief Envoie "PONG" à l'invocateur
+ */
 void pongInvoker(t_fifo fifo)
 {
-    send(fifo, "PONG");
+    send(fifo, PONG_MESSAGE);
 }
 
+/**
+ * \brief Ecoute et réagit aux événements
+ * \return 0 si la fonction a été executée sans problème
+ */
 int listening(t_fifo fifo)
 {
     char buffer[BUFFER_SIZE];
@@ -20,8 +27,6 @@ int listening(t_fifo fifo)
     time_t baseTime = time(0);
 
     int deamonIsListening = 1;
-
-    deamonSay("Listening for inputs...");
     while (deamonIsListening)
     {
         int fd = open(fifo, O_RDONLY);
@@ -34,27 +39,26 @@ int listening(t_fifo fifo)
         deamonSay("recieved [%s]", buffer);
         usleep(200);
 
-        if (strcmp(buffer, "PING") == 0)
+        if (strcmp(buffer, PING_MESSAGE) == 0)
         {
             pongInvoker(fifo);
         }
-        else if (strcmp(buffer, "KILL") == 0)
+        else if (strcmp(buffer, KILL_MESSAGE) == 0)
         {
-            deamonSay("Stoping the deamon");
             deamonIsListening = 0;
         }
-        else if (strcmp(buffer, "TIME") == 0)
+        else if (strcmp(buffer, DATE_MESSAGE) == 0)
         {
             time_t currentTime = time(0);
             char response[BUFFER_SIZE];
             sprintf(response, "%ld", currentTime);
             send(fifo, response);
         }
-        else if (strcmp(buffer, "RESET") == 0)
+        else if (strcmp(buffer, RESET_MESSAGE) == 0)
         {
             baseTime = time(0);
         }
-        else if (strcmp(buffer, "DURATION") == 0)
+        else if (strcmp(buffer, DURATION_MESSAGE) == 0)
         {
             time_t timeDelta = time(0) - baseTime;
             char response[BUFFER_SIZE];
@@ -74,15 +78,13 @@ int main(int argc, char *argv[])
         fprintf(stderr, "One argument is needed\n");
         return 1;
     }
-    deamonSay("Hello !");
+    deamonSay("Bonjour !");
 
     // Get fifo name from the fist argument
     t_fifo myFifo = argv[1];
 
-    deamonSay("Using fifo [%s]", myFifo);
-
     int returnCode = listening(myFifo);
 
-    deamonSay("Good bye !");
+    deamonSay("A+ !");
     return returnCode;
 }

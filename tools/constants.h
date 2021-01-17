@@ -10,21 +10,19 @@
  */
 #define CONNECTION_TIMEOUT 4
 
-#define DEMAON_NAME
+#define FIFO_NAME "/tmp/sophia"
 
+// --- Messages --- //
 #define PING_MESSAGE "PING"
-
 #define PONG_MESSAGE "PONG"
-
 #define KILL_MESSAGE "KILL"
-
 #define DATE_MESSAGE "TIME"
 #define DURATION_MESSAGE "DURATION"
 #define RESET_MESSAGE "RESET"
+#define PONG_MESSAGE "PONG"
 #define HELP_FILE_NAME "help.txt"
 
-#define FIFO_NAME "/tmp/sophia"
-
+// --- Commandes --- //
 #define START_COMMANDE "--start"
 #define STATE_COMMANDE "--state"
 #define HELP_COMMANDE "--help"

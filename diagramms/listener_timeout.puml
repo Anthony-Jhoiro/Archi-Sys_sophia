@@ -1,0 +1,29 @@
+@startuml Listen_with_timemout
+' Le tube
+(*) --> "Création du tube"
+if "Le tube a bien été créé ?" then 
+    -->[NON] "Log : 'Error creating the pipe'"
+    --> (*)
+else 
+    -->[OUI] ===MAIN===
+endif 
+
+' Le timer
+===MAIN=== -->[Timer] "Attendre 4 secondes"
+--> ===SECOND===
+
+' Le listener
+===MAIN=== -->[Listener] "Fermer la sortie du tube"
+--> "Listen (voir fonction listen)"
+--> "Ecrire le résultat dans le tube"
+--> ===SECOND===
+
+===MAIN=== -->[Père] "Attendre le premier fils"
+--> ===SECOND===
+
+===SECOND=== --> if "Le premier fils est le time ?" then 
+    -->[OUI] "Log 'connexion timeout'"
+    --> " "
+else 
+endif 
+@enduml 

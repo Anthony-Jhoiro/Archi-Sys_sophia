@@ -17,6 +17,7 @@ int strLength(char *str)
 
 /**
  * \brief Compare 2 chaines de caractères, retourne 1 si elles sont identiques sinon 0.
+ * TODO : for loop
  * \param chaine1 Première chaine
  * \param chaine2 Seconde chaine
  */
@@ -67,7 +68,7 @@ int listenWithTimeout(char *filename, char *message)
 
         else if (timer == 0)
         {
-
+            // Le timer
             sleep(CONNECTION_TIMEOUT);
             exit(0);
         }

@@ -2,9 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <sys/wait.h>
 #include <fcntl.h>
-#include <sys/stat.h>
 #include <time.h>
 
 /**
@@ -59,7 +57,7 @@ int isDeamonAlive(t_fifo fifo)
     if (ret != 0)
         return ret;
 
-    if (!areEquals(PONG_MESSAGE, buffer))
+    if (areEquals(PONG_MESSAGE, buffer))
         return 1;
 
     return 0;

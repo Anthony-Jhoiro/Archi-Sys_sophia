@@ -1,0 +1,25 @@
+[Time With Sophia]
+Par Anthonby Quéré et Kilian Debraux 
+
+Ce programme vous permet d'interragir avec Sophia, un démon pouvant executer différentes actions sur le temps
+
+Commandes : 
+
+    Controller l'état du démon :
+        --start : Invoque Sophia
+
+        --stop : Renvoie Sophia en enfer
+
+        --restart : Renvoie Sophia en enfer avant de la réinvoquer
+
+        --state : Affiche l'état du démon (en vie ou mort)
+
+    Controller le temps 
+        --date : Affiche la date du pojnt de vu de Sophia
+
+        --duration : Affiche la durée depuis que Sophia est en vie.
+
+        --reset : Modifie la date de création de Sophia
+
+    Autre
+        --help : Affiche cette aide

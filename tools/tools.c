@@ -16,7 +16,7 @@ int strLength(char *str)
 }
 
 /**
- * \brief Compare 2 chaines de caractères, retourne 0 si elles sont identiques sinon 1.
+ * \brief Compare 2 chaines de caractères, retourne 1 si elles sont identiques sinon 0.
  * \param chaine1 Première chaine
  * \param chaine2 Seconde chaine
  */
@@ -27,10 +27,11 @@ int areEquals(char *chaine1, char *chaine2)
     {
         if (chaine1[i] != chaine2[i])
         {
-            return 1;
+            return 0;
         }
+        i++;
     }
-    return 0;
+    return 1;
 }
 
 /**

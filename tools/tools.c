@@ -17,22 +17,20 @@ int strLength(char *str)
 
 /**
  * \brief Compare 2 chaines de caractères, retourne 1 si elles sont identiques sinon 0.
- * TODO : for loop
  * \param chaine1 Première chaine
  * \param chaine2 Seconde chaine
  */
 int areEquals(char *chaine1, char *chaine2)
 {
-    int i = 0;
-    while (chaine1[i] != '\0')
+    int i;
+    for (i = 0; chaine1[i] != '\0'; i++)
     {
         if (chaine1[i] != chaine2[i])
         {
             return 0;
         }
-        i++;
     }
-    return 1;
+    return chaine2[i] == '\0';
 }
 
 /**
@@ -53,8 +51,9 @@ int listenWithTimeout(char *filename, char *message)
     listener = fork();
     if (listener == -1)
         return 1;
-    else if (listener == 0 && timer != 0) // TODO : is timer != 0 necessary ?
+    else if (listener == 0)
     {
+        // Processus fils : écouteur
         close(tube[0]);
         listen(filename, message);
         write(tube[1], message, BUFFER_SIZE);
@@ -68,7 +67,7 @@ int listenWithTimeout(char *filename, char *message)
 
         else if (timer == 0)
         {
-            // Le timer
+            // Processus fils Timer
             sleep(CONNECTION_TIMEOUT);
             exit(0);
         }
@@ -80,15 +79,13 @@ int listenWithTimeout(char *filename, char *message)
             if (firstChild == timer)
             {
                 fprintf(stderr, "Connection timeout\n");
-                // TODO : Replace 9 with SIGKILL
-                kill(listener, 9);
+                kill(listener, KILL_SIGNAL);
                 return 2;
             }
 
             close(tube[1]);
             read(tube[0], message, BUFFER_SIZE);
-            // TODO : Replace 9 with SIGKILL
-            kill(timer, 9);
+            kill(timer, KILL_SIGNAL);
 
             return 0;
         }

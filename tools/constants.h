@@ -6,11 +6,13 @@
 #define FIFO_MODE 0666
 
 /**
- * Time to wait a response of a process
+ * Time to wait a response of a process (in seconds)
  */
 #define CONNECTION_TIMEOUT 4
 
 #define FIFO_NAME "/tmp/sophia"
+
+#define KILL_SIGNAL 9
 
 // --- Messages --- //
 #define PING_MESSAGE "PING"

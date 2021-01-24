@@ -1,33 +1,20 @@
 @startuml
+|Invocateur|
+|Démon|
 
-|invokator|
-start
-:attente entrée commande;
-:reception du reset et trasmission de la demande au démon;
-fork
-    :attente du message;
-fork again
-    |daemon|
-    if (le démon est démarré) then (oui)
-        |invokator| 
-        :reception du message positif;
-    else (non)
-        |invokator|
-        :affichage message démon non démarré;
-        stop
-    endif
-end fork
-
-fork
-    :attente du message;
-fork again
-    |daemon|
-    :modification date début dans le fichier;
-    :envoie du message de réussite;
-    |invokator|
-end fork
-:affichage message de réussite;
-end
-
+|Invocateur|
+if (La FIOFO existe ?) then (Non)
+    :Erreur;
+    end 
+else (Oui)
+    :Envoyer "RESET";
+    split 
+        stop 
+    split again 
+        |Démon|
+        :Recevoir "Reset";
+        :Modifier la valeur de la "date de base";
+        detach
+    end split 
 
 @enduml

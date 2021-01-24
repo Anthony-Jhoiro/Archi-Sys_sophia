@@ -1,34 +1,31 @@
 @startuml
+|Invocateur|
+|Démon|
 
-|invokator|
-start
-:attente entrée commande;
-:reception du duration et trasmission de la demande au démon;
-fork
-    :attente confirmation;
-fork again
-    |daemon|
-    if (le démon est démarré) then (oui)
-        |invokator|
-        :reception du message positif;
-    else (non)
-        |invokator|
-        :affichage message démon non démarré;
+|Invocateur|
+if (La FIOFO existe ?) then (Non)
+    :Erreur;
+    end 
+else (Oui)
+    :Envoyer "DURATION";
+    split 
+        :Écouter avec Timeout;
+    split again 
+        |Démon|
+        -> <b>"DURATION";
+        :Recevoir "DURATION";
+        :Envoyer la différence entre la date\nactuelle et la "date de base";
+
+    end split 
+    |Invocateur|
+    -> <b> durée;
+    if (Erreur Timeout ?) then (Oui)
+        :Erreur;
+        end
+    else (Non)
+        :Recevoir la durée;
+        :Afficher la durée;
         stop
-    endif
-end fork
-
-fork
-    :attente du message;
-fork again
-    |daemon|
-    :recherche date début dans le fichier;
-    :calcul durée de fonctionnement
-    :envoie durée (sous forme de timestamp);
-    |invokator|
-end fork
-:convertit timestamp en hh:mm:ss;
-:affichage durée;
-end
+    endif     
 
 @enduml

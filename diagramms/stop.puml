@@ -9,6 +9,7 @@ if (La FIFO existe ?) then (Non)
 else (Oui)
     :Envoyer "KILL";
     split
+        :Supprimer la FIFO;
         stop
     split again
         |Démon|

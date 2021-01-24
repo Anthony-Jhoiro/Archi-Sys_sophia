@@ -21,9 +21,13 @@ endif
 ===MAIN=== -->[Père] "Attendre le premier fils"
 --> ===SECOND===
 
-===SECOND=== --> if "Le premier fils est le time ?" then 
+===SECOND=== --> if "Le premier fils à se terminer est le time ?" then 
     -->[OUI] "Log 'connexion timeout'"
-    --> " "
+    --> "Arrêt du processus listener"
+    --> (*)
 else 
+    -->[NON] "Arrêt du processus timer"
+    --> "Récupération du message dans le tube"
+    --> (*)
 endif 
 @enduml 

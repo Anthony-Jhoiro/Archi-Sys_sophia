@@ -1,33 +1,20 @@
-@startuml
-!include tools.iuml
-
-INVOKER_SAY(Read Arguments, , (*))
-
-note right: If only one argument return error 1\n(Do not create error if more than 2\narguments for extensions)
-if "Argument Number == 1" then 
-    ERROR(One argument needed, YES)
-    $err[return 1] (*)
-else 
-    -->[NO] if "Deamon is running" then 
-        ERROR(Deamon has already been started, YES)
-        $err[return 2] (*)
-    else 
-        INVOKER_SAY(Create pipe, NO)
-        -->[Create deamon] ===S===
-        
-    endif 
-endif
-
-INVOKER_SAY(Wait for response, Invoker, ===S===)
---> ===R===
-
-DEAMON_SAY(Send running response, Deamon, ===S===)
---> ===R===
-
-INVOKER_SAY(Log : Deamon successfully started, Invoker, ===R===)
---> INVOKER_SAY(Exit Success)
--->[return 0] (*)
-
-DEAMON_SAY(Start listening for event, Deamon, ===R===)
-
-@enduml
+@startuml 
+|Invoker|
+start 
+fork
+|Invoker|
+    :Création de la FIFO;
+    if (la fifo a bienété créée) then (Oui)
+    else (Non)
+        :Supression de la fifo precedente;        
+        :Création de la FIFO;
+    endif
+    stop
+    
+fork again
+    :Executer le programme Démon;
+    |Deamon|
+    start
+    :En attente d'événement;
+    detach
+@enduml 

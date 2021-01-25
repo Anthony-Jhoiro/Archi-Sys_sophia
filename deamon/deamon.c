@@ -31,7 +31,6 @@ int listening(t_fifo fifo)
     {
         int fd = open(fifo, O_RDONLY);
         FILE *fp = fdopen(fd, "r");
-        // TODO : why fscanf
         fscanf(fp, "%s", buffer); // We are using fscanf here to pause the process unitil the next input
 
         if (strlen(buffer) == 0)

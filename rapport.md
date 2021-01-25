@@ -1,8 +1,13 @@
 # Projet : Architecture système
 
-> Trouvez la dernière mise à jour du projet ici : [https://github.com/Anthony-Jhoiro/Archi-Sys_sophia]
+> Retrouvez la dernière mise à jour du projet ici : [https://github.com/Anthony-Jhoiro/Archi-Sys_sophia]
 
-<!-- TODO : Introduction -->
+Cette année comme projet d'architecture système nous avons dû créer un programme capable de créer un démon et de communiquer avec lui. Nous avons choisi de façon arbitrair d'appeler le démon Sophia.
+Sophia est designée pour executer des commandes simples sans consommer beaucoup de resources. Elle est de plus facilement extensible et peut donc servir de base à une application plus grand publique.
+
+## Technologies
+
+Nous avons utilisé des forks, des pipes et des fifo. Les forks nous ont servi à séparrer le processus principal, nous permettant ainsi de créer le démon et de séparer l'écoute de nouveaux messages en trois processus, un listener, un timer et le processus principal (voir Listener). Une FIFO est utilisé pour communiquer avec le démon et un pipe est utilisé pour transmettre le message dans le listener.
 
 <div class="page"/>
 
@@ -103,4 +108,23 @@ La commande `--reset` permet de modifier la "date de base" du démon. Pour ce fa
 
 ## Partage des tâches
 
-<!-- TODO : Insérer le partage des tâches -->
+**Anthony**
+
+- fonctions de base de l'invocateur
+  - `--start`
+  - `--stop`
+  - `--restart`
+  - `--state`
+
+**Kilian**
+
+- Le démon
+- La gestion du temps
+  - `--date`
+  - `--duration`
+  - `--reset`
+
+**Commun**
+
+- Le rapport avec les diagrammes
+- Les fonctions pour lire et écrire dans la fifo

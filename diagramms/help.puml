@@ -1,19 +1,5 @@
 @startuml
 
-|invokator|
-start
-:attente entrée commande;
-:reception du help et trasmission de la demande au démon;
-fork
-    :attente du message;
-fork again
-    |daemon|
-    :reception de la commande;
-    :transmission du texte d'aide;
-|invokator|
-end fork
-:reception et affichage du message d'aide;
-end
-
+:A refaire;
 
 @enduml

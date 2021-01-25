@@ -1,5 +1,9 @@
 @startuml
 
-:A refaire;
-
+|Invocateur|
+start
+:Lire le contenue de help.txt;
+:Afficher le contenue de help.txt;
+stop
+|Démon|
 @enduml

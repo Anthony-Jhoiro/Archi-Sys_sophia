@@ -21,7 +21,6 @@
 #define DATE_MESSAGE "TIME"
 #define DURATION_MESSAGE "DURATION"
 #define RESET_MESSAGE "RESET"
-#define PONG_MESSAGE "PONG"
 #define HELP_FILE_NAME "help.txt"
 
 // --- Commandes --- //

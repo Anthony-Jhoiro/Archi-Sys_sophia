@@ -5,8 +5,6 @@
 #include <fcntl.h>
 #include <string.h>
 
-
-
 /**
  * \brief Ecoute et réagit aux événements
  * \return 0 si la fonction a été executée sans problème
@@ -23,12 +21,13 @@ int listening(t_fifo fifo)
         int fd = open(fifo, O_RDONLY);
         FILE *fp = fdopen(fd, "r");
         fscanf(fp, "%s", buffer); // We are using fscanf here to pause the process unitil the next input
+        close(fd);
 
         if (strlen(buffer) == 0)
             continue;
 
         deamonSay("recieved [%s]", buffer);
-        usleep(200);
+        // usleep(200);
 
         if (strcmp(buffer, PING_MESSAGE) == 0)
         {
@@ -55,8 +54,6 @@ int listening(t_fifo fifo)
             // Send the difference between the current time and the base time
             sendDuration(fifo, baseTime);
         }
-
-        close(fd);
     }
     return 0;
 }
@@ -79,15 +76,7 @@ int main(int argc, char *argv[])
     return returnCode;
 }
 
-
-
-
-
 // ---------------- deamon's functions
-
-
-
-
 
 /**
  * \brief Envoie "PONG" à l'invocateur
@@ -102,7 +91,8 @@ void pongInvoker(t_fifo fifo)
  *  
  *  \param t_fifo : fifo qui communique avec l'invoker
  */
-void sendDate(t_fifo fifo){
+void sendDate(t_fifo fifo)
+{
     time_t currentTime = time(0);
     char response[BUFFER_SIZE];
     sprintf(response, "%ld", currentTime);
@@ -114,7 +104,8 @@ void sendDate(t_fifo fifo){
  *  
  *  \param t_fifo : fifo qui communique avec l'invoker
  */
-void sendDuration(t_fifo fifo, time_t baseTime){
+void sendDuration(t_fifo fifo, time_t baseTime)
+{
     time_t timeDelta = time(0) - baseTime;
     char response[BUFFER_SIZE];
     sprintf(response, "%ld", timeDelta);
@@ -126,7 +117,8 @@ void sendDuration(t_fifo fifo, time_t baseTime){
  *  
  *  \param int* : entier qui indique l'état d'écoute du deamon
  */
-void killDeamon(int* deamonIsListening){
+void killDeamon(int *deamonIsListening)
+{
     *deamonIsListening = 0;
 }
 
@@ -135,6 +127,7 @@ void killDeamon(int* deamonIsListening){
  *  
  *  \param time_t* : ancienne date d'appel à modifier
  */
-void resetDeamon(time_t* baseTime){
+void resetDeamon(time_t *baseTime)
+{
     *baseTime = time(0);
 }

@@ -76,7 +76,7 @@ La commande `--restart` permet de relancer un démon. Pour ce faire, on lance la
 
 ### Commande `--state`
 
-La commande `--state` permet de savoir si un démon est actif ou non. Elle commence par vérifier si la FIFO existe puis elle envoie un _PING_ au démon par cette FIFO. En recevant un _PING_, le démon va renvoyer un _PONG_, il y a un timeout de 200 microsecondes pour permettre à l'invocateur de passer en écoute. Il aurait été possible de mettre l'invocateur en écoute avec un thread ou un fork mais après des tests, nous nous sommes rendu compte que c'était encore plus long. Une fois le _PONG_ reçu, l'invocateur informe l'utilisateur que le démon est actif.
+La commande `--state` permet de savoir si un démon est actif ou non. Elle commence par vérifier si la FIFO existe puis elle envoie un _PING_ au démon par cette FIFO. En recevant un _PING_, le démon va renvoyer un _PONG_. Une fois le _PONG_ reçu, l'invocateur informe l'utilisateur que le démon est actif.
 
 :[listener_diagramm](diagramms/state.puml)
 

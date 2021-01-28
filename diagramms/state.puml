@@ -18,7 +18,6 @@ else (Oui)
     split again 
         -> <b>"PING";
         :Reçoit le PING;
-        :Attendre 200 micro-secondes;
         :Envoyer un PONG;
         -> <b>"PONG";
         

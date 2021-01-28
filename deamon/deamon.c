@@ -1,9 +1,5 @@
 #include "deamon.h"
 #include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <string.h>
 
 /**
  * \brief Ecoute et réagit aux événements
@@ -18,38 +14,35 @@ int listening(t_fifo fifo)
     int deamonIsListening = 1;
     while (deamonIsListening)
     {
-        int fd = open(fifo, O_RDONLY);
-        FILE *fp = fdopen(fd, "r");
-        fscanf(fp, "%s", buffer); // We are using fscanf here to pause the process unitil the next input
-        close(fd);
 
-        if (strlen(buffer) == 0)
+        listen(fifo, buffer);
+
+        if (strLength(buffer) == 0)
             continue;
 
         deamonSay("recieved [%s]", buffer);
-        // usleep(200);
 
-        if (strcmp(buffer, PING_MESSAGE) == 0)
+        if (areEquals(buffer, PING_MESSAGE))
         {
             // Send a PONG to the invoker
             pongInvoker(fifo);
         }
-        else if (strcmp(buffer, KILL_MESSAGE) == 0)
+        else if (areEquals(buffer, KILL_MESSAGE))
         {
             // Stop listening for events => Stop the deamon
             killDeamon(&deamonIsListening);
         }
-        else if (strcmp(buffer, DATE_MESSAGE) == 0)
+        else if (areEquals(buffer, DATE_MESSAGE))
         {
             // Send the current date
             sendDate(fifo);
         }
-        else if (strcmp(buffer, RESET_MESSAGE) == 0)
+        else if (areEquals(buffer, RESET_MESSAGE))
         {
             // Reset the base time
             resetDeamon(&baseTime);
         }
-        else if (strcmp(buffer, DURATION_MESSAGE) == 0)
+        else if (areEquals(buffer, DURATION_MESSAGE))
         {
             // Send the difference between the current time and the base time
             sendDuration(fifo, baseTime);
